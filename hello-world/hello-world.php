@@ -55,4 +55,46 @@
 
     add_action('wp_footer', 'hello_world_display_footer_scripts');
 
+
+    function helloworldformfunction(){
+        $content = "";
+        $content .= "<form method='post' action='http://localhost/wordpress/thank-you/'>";
+        $content .= "<input type='text' name='full_name' placeholder='Your Full Name' />";
+        $content .= "<br/>";
+        $content .= "<input type='text' name='email_address' placeholder='Your Full Name' />";
+        $content .= "<br/>";
+        $content .= "<input type='text' name='phone_number' placeholder='Your Full Name' />";
+        $content .= "<br/>";
+        $content .= "<textarea name='comments' placeholder='Give us your comments'></textarea>";
+        $content .= "<br/>";
+        $content .= "<input type='submit' name='helloworld_submit_form' value='Submit your information'>";
+        $content .= "</form>";
+        
+                
+        return $content;
+    }
+    add_shortcode('helloworldform', 'helloworldformfunction');
+
+    function set_html_content_type(){
+        return 'text/html';
+    }
+
+    function helloworld_form_capture(){
+        if(array_key_exists('helloworld_submit_form', $_POST)){
+            $to = 'taregetmailaddressihere';
+            $subject = 'Hello World Custom Plugin Test';
+            $body = '';
+
+            $body .= 'Name: '.$_POST['full_name'].'<br/>';
+            $body .= 'Email: '.$_POST['email_address'].'<br/>';
+            $body .= 'Phone: '.$_POST['phone_number'].'<br/>';
+            $body .= 'Comments: '.$_POST['comments'].'<br/>';
+
+            add_filter('wp_mail_content_type', 'set_html_content_type' );
+            wp_mail($to, $subject, $body);
+            remove_filter('wp_mail_content_type', 'set_html_content_type' );
+        }
+    }
+    add_action('wp_head', 'helloworld_form_capture');
+
 ?>  
